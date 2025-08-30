@@ -36,25 +36,21 @@ class PaymentHandler {
     async handleStarPurchase(callbackQuery, stars) {
         const chatId = callbackQuery.message.chat.id;
         const userId = callbackQuery.from.id;
-        const coins = stars * 10; // 1 звезда = 10 коинов
-        
-        try {
-            // Создаем инвойс для оплаты через Telegram Stars
-            const invoice = {
-                chat_id: chatId,
-                title: `Пополнение на ${coins} коинов`,
-                description: `Покупка ${coins} Tick коинов за ${stars} ⭐`,
-                payload: `stars_${userId}_${stars}_${Date.now()}`,
-                provider_token: '', // Для Telegram Stars оставляем пустым
-                currency: 'XTR', // Валюта Telegram Stars
-                prices: [{
-                    label: `${coins} Tick коинов`,
-                    amount: stars // Количество звезд
-                }]
-            };
+        const coins = stars * 10; // курс 1⭐ = 10 коинов
 
-            await this.bot.sendInvoice(invoice);
-            
+        try {
+            await this.bot.sendInvoice(
+                chatId,
+                `Пополнение на ${coins} коинов`,
+                `Покупка ${coins} Tick коинов за ${stars} ⭐`,
+                `stars_${userId}_${stars}_${Date.now()}`, // payload
+                '', // provider_token пустой для Stars
+                'XTR', // валюта
+                [
+                    { label: `${coins} Tick коинов`, amount: stars * 1000 } // ✅ 1⭐ = 1000
+                ]
+            );
+
         } catch (error) {
             console.error('Error creating invoice:', error);
             this.bot.answerCallbackQuery(callbackQuery.id, { 

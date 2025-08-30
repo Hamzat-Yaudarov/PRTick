@@ -10,7 +10,7 @@ const pool = new Pool({
 
 async function initDatabase() {
     try {
-        console.log('🔄 Инициализация баз�� данных...');
+        console.log('🔄 Инициализация базы данных...');
         
         // Читаем SQL скрипт
         const sqlScript = fs.readFileSync(path.join(__dirname, 'database.sql'), 'utf8');
